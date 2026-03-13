@@ -5,8 +5,15 @@ export default function PolicySelector({
     cacheSize, setCacheSize,
     workload, setWorkload,
     customTraceStr, setCustomTraceStr,
+    archTarget, setArchTarget,
     onRun, isRunning, workloads
 }) {
+    const targets = [
+        { id: 'cpu', label: 'Generic CPU', desc: 'Standard General Purpose' },
+        { id: 'gpu', label: 'GPU Accelerator', desc: 'High-Throughput Streaming' },
+        { id: 'npu', label: 'NPU Accelerator', desc: 'Tensor Matrix Reuse' }
+    ];
+
     const policies = [
         { id: 'LRU', label: 'LRU', desc: 'Least Recently Used' },
         { id: 'FIFO', label: 'FIFO', desc: 'First In First Out' },
@@ -18,6 +25,32 @@ export default function PolicySelector({
     return (
         <div className="card">
             <div className="card-title">Simulation Control Panel</div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+                <span className="label">Architecture Target</span>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {targets.map(t => (
+                        <button
+                            key={t.id}
+                            onClick={() => setArchTarget(t.id)}
+                            style={{
+                                flex: 1,
+                                padding: '0.6rem 0.4rem',
+                                fontSize: '0.7rem',
+                                border: `1px solid ${archTarget === t.id ? 'var(--accent-blue)' : 'var(--border-subtle)'}`,
+                                background: archTarget === t.id ? 'rgba(59, 130, 246, 0.1)' : 'rgba(0,0,0,0.2)',
+                                color: archTarget === t.id ? 'var(--accent-blue)' : 'var(--text-muted)',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                            title={t.desc}
+                        >
+                            {t.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
                 <span className="label">Replacement Policy</span>
@@ -89,20 +122,11 @@ export default function PolicySelector({
                 />
             </div>
 
-            <button className="button-run" onClick={onRun} disabled={isRunning}>
+            <button className="button-run" onClick={() => onRun()} disabled={isRunning}>
                 {isRunning ? 'Running Simulation...' : 'Run Simulation'}
             </button>
 
-            {policy === 'adaptive' && (
-                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.3)', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--accent-purple)', fontWeight: 'bold', marginBottom: '0.4rem' }}>
-                        ⚡ Adaptive Engine Active
-                    </div>
-                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
-                        The engine will dynamically analyze memory access patterns (sequential, looping, hotspot) and thrashing rates to auto-switch policies in real time.
-                    </p>
-                </div>
-            )}
+
         </div>
     );
 }
