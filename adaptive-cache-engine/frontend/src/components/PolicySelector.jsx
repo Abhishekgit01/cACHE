@@ -4,6 +4,7 @@ export default function PolicySelector({
     policy, setPolicy,
     cacheSize, setCacheSize,
     workload, setWorkload,
+    customTraceStr, setCustomTraceStr,
     onRun, isRunning, workloads
 }) {
     const policies = [
@@ -53,9 +54,25 @@ export default function PolicySelector({
                     onChange={e => setWorkload(e.target.value)}
                 >
                     {workloads.map(w => (
-                        <option key={w} value={w}>{w.charAt(0).toUpperCase() + w.slice(1)} Workload</option>
+                        <option key={w} value={w}>
+                            {w === 'custom' ? 'Custom Trace' : w.charAt(0).toUpperCase() + w.slice(1) + ' Workload'}
+                        </option>
                     ))}
                 </select>
+
+                {workload === 'custom' && (
+                    <div style={{ marginTop: '0.5rem' }}>
+                        <span className="label">Enter Comma-Separated Memory Addresses</span>
+                        <input
+                            type="text"
+                            className="select"
+                            style={{ marginBottom: 0, padding: '0.8rem', background: 'rgba(255,255,255,0.05)' }}
+                            value={customTraceStr}
+                            onChange={e => setCustomTraceStr(e.target.value)}
+                            placeholder="e.g. 5,1,2,5,3,4,5,1,2"
+                        />
+                    </div>
+                )}
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
